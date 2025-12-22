@@ -8,20 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { api } from '@/lib/api';
-
-type ServiceType = {
-  id: string;
-  name: string;
-  duration: number;
-  price: number;
-};
-
-const services: ServiceType[] = [
-  { id: '1', name: 'Замена колес (4 шт)', duration: 30, price: 2000 },
-  { id: '2', name: 'Балансировка (4 шт)', duration: 20, price: 1200 },
-  { id: '3', name: 'Ремонт прокола', duration: 15, price: 800 },
-  { id: '4', name: 'Развал-схождение', duration: 60, price: 3500 },
-];
+import { serviceCategories } from '@/data/services';
 
 const locations = [
   { id: '1', name: 'ул. Ленина, 45', available: true },
@@ -34,18 +21,21 @@ const timeSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00'
 const PublicBookingForm = () => {
   const [step, setStep] = useState(1);
   const [selectedLocation, setSelectedLocation] = useState('');
-  const [selectedService, setSelectedService] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCarType, setSelectedCarType] = useState('');
+  const [selectedWheelSize, setSelectedWheelSize] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState('');
-  const [carType, setCarType] = useState('');
   const [clientName, setClientName] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [clientEmail, setClientEmail] = useState('');
 
-  const selectedServiceData = services.find(s => s.id === selectedService);
   const selectedLocationData = locations.find(l => l.id === selectedLocation);
-  const totalPrice = selectedServiceData?.price || 0;
-  const totalDuration = selectedServiceData?.duration || 0;
+  const selectedCategoryData = serviceCategories.find(c => c.id === selectedCategory);
+  const selectedCarTypeData = selectedCategoryData?.subcategories.find(s => s.id === selectedCarType);
+  const selectedWheelData = selectedCarTypeData?.wheelSizes.find(w => w.size === selectedWheelSize);
+  
+  const totalPrice = selectedWheelData?.price || 0;
 
   const handleBooking = async () => {
     try {
@@ -54,9 +44,9 @@ const PublicBookingForm = () => {
         clientPhone,
         clientEmail,
         location: selectedLocationData?.name || '',
-        carType,
-        service: selectedServiceData?.name || '',
-        serviceDuration: totalDuration,
+        carType: selectedCarTypeData?.name || '',
+        service: `${selectedCategoryData?.name} - ${selectedWheelData?.size}`,
+        serviceDuration: 30,
         servicePrice: totalPrice,
         bookingDate: selectedDate?.toISOString().split('T')[0] || '',
         bookingTime: selectedTime,
@@ -70,10 +60,11 @@ const PublicBookingForm = () => {
   const resetForm = () => {
     setStep(1);
     setSelectedLocation('');
-    setSelectedService('');
+    setSelectedCategory('');
+    setSelectedCarType('');
+    setSelectedWheelSize('');
     setSelectedDate(undefined);
     setSelectedTime('');
-    setCarType('');
     setClientName('');
     setClientPhone('');
     setClientEmail('');
@@ -131,60 +122,73 @@ const PublicBookingForm = () => {
             </div>
 
             <div>
-              <Label className="text-lg mb-4 block">Тип автомобиля</Label>
-              <Select value={carType} onValueChange={setCarType}>
+              <Label className="text-lg mb-4 block">Выберите услугу</Label>
+              <Select value={selectedCategory} onValueChange={(value) => {
+                setSelectedCategory(value);
+                setSelectedCarType('');
+                setSelectedWheelSize('');
+              }}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Выберите тип автомобиля" />
+                  <SelectValue placeholder="Выберите тип услуги" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="sedan">Легковой</SelectItem>
-                  <SelectItem value="suv">Внедорожник</SelectItem>
-                  <SelectItem value="minivan">Минивен</SelectItem>
-                  <SelectItem value="commercial">Коммерческий</SelectItem>
+                  {serviceCategories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
 
-            <div>
-              <Label className="text-lg mb-4 block">Выберите услугу</Label>
-              <div className="grid gap-4 md:grid-cols-2">
-                {services.map((service) => (
-                  <Card
-                    key={service.id}
-                    className={`cursor-pointer transition-all hover-scale ${
-                      selectedService === service.id
-                        ? 'border-primary bg-primary/10'
-                        : 'border-border'
-                    }`}
-                    onClick={() => setSelectedService(service.id)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium mb-1">{service.name}</h3>
-                          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Icon name="Clock" size={14} />
-                              {service.duration} мин
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Icon name="Wallet" size={14} />
-                              {service.price} ₽
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+            {selectedCategory && (
+              <div>
+                <Label className="text-lg mb-4 block">Тип автомобиля</Label>
+                <Select value={selectedCarType} onValueChange={(value) => {
+                  setSelectedCarType(value);
+                  setSelectedWheelSize('');
+                }}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Выберите тип автомобиля" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {selectedCategoryData?.subcategories.map((sub) => (
+                      <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            </div>
+            )}
+
+            {selectedCarType && (
+              <div>
+                <Label className="text-lg mb-4 block">Размер колеса</Label>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {selectedCarTypeData?.wheelSizes.map((wheel) => (
+                    <Card
+                      key={wheel.size}
+                      className={`cursor-pointer transition-all hover-scale ${
+                        selectedWheelSize === wheel.size
+                          ? 'border-primary bg-primary/10'
+                          : 'border-border'
+                      }`}
+                      onClick={() => setSelectedWheelSize(wheel.size)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-center">
+                          <span className="font-medium">{wheel.size}</span>
+                          <Badge variant="secondary">{wheel.price} ₽</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <Button
               size="lg"
               className="w-full"
               onClick={() => setStep(2)}
-              disabled={!selectedLocation || !selectedService || !carType}
+              disabled={!selectedLocation || !selectedWheelSize}
             >
               Далее: Выбор времени
               <Icon name="ArrowRight" size={18} className="ml-2" />
@@ -255,7 +259,15 @@ const PublicBookingForm = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Услуга:</span>
-                    <span className="font-medium">{selectedServiceData?.name}</span>
+                    <span className="font-medium">{selectedCategoryData?.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Тип авто:</span>
+                    <span className="font-medium">{selectedCarTypeData?.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Размер:</span>
+                    <span className="font-medium">{selectedWheelData?.size}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Дата:</span>
@@ -265,12 +277,8 @@ const PublicBookingForm = () => {
                     <span className="text-muted-foreground">Время:</span>
                     <span className="font-medium">{selectedTime}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Длительность:</span>
-                    <span className="font-medium">{totalDuration} мин</span>
-                  </div>
                   <div className="border-t border-border pt-3 mt-3 flex justify-between text-lg">
-                    <span className="font-medium">Примерная стоимость:</span>
+                    <span className="font-medium">Стоимость:</span>
                     <span className="font-bold text-primary">{totalPrice} ₽</span>
                   </div>
                 </div>
