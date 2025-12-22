@@ -15,9 +15,8 @@ const services = [
 ];
 
 const locations = [
-  { name: 'ул. Ленина, 45', time: '08:00 - 22:00', rating: 4.9, reviews: 234 },
-  { name: 'пр. Мира, 123', time: '09:00 - 21:00', rating: 4.8, reviews: 189 },
-  { name: 'ул. Гагарина, 78', time: '08:00 - 20:00', rating: 4.7, reviews: 156 },
+  { name: 'ул. Молокова, 72/2', phone: '+7 (913) 520-32-82', time: '08:00 - 22:00', rating: 4.9, reviews: 234 },
+  { name: 'ул. 9 Мая, 62', phone: '+7 (983) 200-99-03', time: '08:00 - 22:00', rating: 4.8, reviews: 189 },
 ];
 
 const features = [
@@ -81,7 +80,7 @@ const Home = () => {
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8">
                 <Icon name="Phone" size={20} className="mr-2" />
-                +7 (999) 123-45-67
+                +7 (983) 290-82-41
               </Button>
             </div>
           </div>
@@ -146,9 +145,15 @@ const Home = () => {
                   <Icon name="MapPin" size={20} className="text-primary" />
                   {location.name}
                 </CardTitle>
-                <CardDescription className="flex items-center gap-1">
-                  <Icon name="Clock" size={14} />
-                  {location.time}
+                <CardDescription className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <Icon name="Clock" size={14} />
+                    {location.time}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Icon name="Phone" size={14} />
+                    {location.phone}
+                  </div>
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -229,33 +234,40 @@ const Home = () => {
           <div className="grid gap-8 md:grid-cols-4">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                  <Icon name="Wrench" size={24} className="text-primary-foreground" />
-                </div>
-                <h3 className="text-xl font-heading font-bold">ШиноПро</h3>
+                <img src="https://cdn.poehali.dev/files/image 12.png" alt="RK Шиномонтаж" className="h-10" />
               </div>
               <p className="text-sm text-muted-foreground">
-                Профессиональный шиномонтаж с онлайн-записью
+                Профессиональный шиномонтаж в Красноярске
               </p>
             </div>
             <div>
-              <h4 className="font-heading font-semibold mb-3">Услуги</h4>
+              <h4 className="font-heading font-semibold mb-3">Наши точки</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#services" className="hover:text-primary transition-colors">Замена колес</a></li>
-                <li><a href="#services" className="hover:text-primary transition-colors">Балансировка</a></li>
-                <li><a href="#services" className="hover:text-primary transition-colors">Хранение шин</a></li>
+                <li>
+                  <div className="font-medium">ул. Молокова, 72/2</div>
+                  <div className="flex items-center gap-1 mt-1">
+                    <Icon name="Phone" size={12} />
+                    +7 (913) 520-32-82
+                  </div>
+                </li>
+                <li className="mt-3">
+                  <div className="font-medium">ул. 9 Мая, 62</div>
+                  <div className="flex items-center gap-1 mt-1">
+                    <Icon name="Phone" size={12} />
+                    +7 (983) 200-99-03
+                  </div>
+                </li>
               </ul>
             </div>
             <div>
               <h4 className="font-heading font-semibold mb-3">Контакты</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <Icon name="Phone" size={14} />
-                  +7 (999) 123-45-67
-                </li>
-                <li className="flex items-center gap-2">
-                  <Icon name="Mail" size={14} />
-                  info@shinopro.ru
+                <li className="flex items-start gap-2">
+                  <Icon name="Phone" size={14} className="mt-0.5" />
+                  <div>
+                    <div>Администратор:</div>
+                    <div className="font-medium">+7 (983) 290-82-41</div>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -268,7 +280,8 @@ const Home = () => {
             </div>
           </div>
           <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 ШиноПро. Все права защищены.</p>
+            <p>ИП Кольцов Роман Петрович</p>
+            <p className="mt-1">&copy; 2024 RK Шиномонтаж. Все права защищены.</p>
           </div>
         </div>
       </footer>

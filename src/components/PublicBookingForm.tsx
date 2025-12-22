@@ -11,12 +11,11 @@ import { api } from '@/lib/api';
 import { serviceCategories } from '@/data/services';
 
 const locations = [
-  { id: '1', name: 'ул. Ленина, 45', available: true },
-  { id: '2', name: 'пр. Мира, 123', available: true },
-  { id: '3', name: 'ул. Гагарина, 78', available: true },
+  { id: '1', name: 'ул. Молокова, 72/2', available: true },
+  { id: '2', name: 'ул. 9 Мая, 62', available: true },
 ];
 
-const timeSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+const timeSlots = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00'];
 
 const PublicBookingForm = () => {
   const [step, setStep] = useState(1);

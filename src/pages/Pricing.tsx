@@ -12,12 +12,19 @@ const Pricing = () => {
             <div className="flex items-center gap-3">
               <img src="https://cdn.poehali.dev/files/image 12.png" alt="RK Шиномонтаж" className="h-12" />
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => window.location.href = '/'}>
-                <Icon name="Home" size={18} className="mr-2" />
-                Главная
+            <nav className="hidden md:flex items-center gap-6">
+              <a href="/" className="text-sm hover:text-primary transition-colors">Главная</a>
+              <a href="/#services" className="text-sm hover:text-primary transition-colors">Услуги</a>
+              <a href="/#locations" className="text-sm hover:text-primary transition-colors">Точки</a>
+              <a href="/#about" className="text-sm hover:text-primary transition-colors">О нас</a>
+              <Button onClick={() => window.location.href = '/#booking'} className="bg-primary hover:bg-primary/90">
+                Записаться
               </Button>
-            </div>
+            </nav>
+            <Button onClick={() => window.location.href = '/'} className="md:hidden" variant="outline">
+              <Icon name="Home" size={18} className="mr-2" />
+              Главная
+            </Button>
           </div>
         </div>
       </header>
@@ -237,6 +244,63 @@ const Pricing = () => {
           </div>
         </div>
       </main>
+
+      <footer className="border-t border-border bg-card mt-16">
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid gap-8 md:grid-cols-4">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <img src="https://cdn.poehali.dev/files/image 12.png" alt="RK Шиномонтаж" className="h-10" />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Профессиональный шиномонтаж в Красноярске
+              </p>
+            </div>
+            <div>
+              <h4 className="font-heading font-semibold mb-3">Наши точки</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <div className="font-medium">ул. Молокова, 72/2</div>
+                  <div className="flex items-center gap-1 mt-1">
+                    <Icon name="Phone" size={12} />
+                    +7 (913) 520-32-82
+                  </div>
+                </li>
+                <li className="mt-3">
+                  <div className="font-medium">ул. 9 Мая, 62</div>
+                  <div className="flex items-center gap-1 mt-1">
+                    <Icon name="Phone" size={12} />
+                    +7 (983) 200-99-03
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-heading font-semibold mb-3">Контакты</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <Icon name="Phone" size={14} className="mt-0.5" />
+                  <div>
+                    <div>Администратор:</div>
+                    <div className="font-medium">+7 (983) 290-82-41</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-heading font-semibold mb-3">График работы</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>Пн-Вс: 08:00 - 22:00</li>
+                <li>Без выходных</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
+            <p>ИП Кольцов Роман Петрович</p>
+            <p className="mt-1">&copy; 2024 RK Шиномонтаж. Все права защищены.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
