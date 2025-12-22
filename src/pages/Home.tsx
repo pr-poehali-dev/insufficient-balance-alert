@@ -174,56 +174,111 @@ const Home = () => {
       </section>
 
       <section id="about" className="container mx-auto px-4 py-16 bg-muted/20">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">Почему выбирают нас?</h2>
-          <div className="grid gap-8 md:grid-cols-2 text-left">
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <Icon name="Award" size={20} className="text-primary" />
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-12 text-center">Почему выбирают нас?</h2>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-3">
+                  <span className="text-2xl font-bold text-primary">01</span>
                 </div>
-                <div>
-                  <h3 className="font-heading font-semibold mb-1">Опыт 15+ лет</h3>
-                  <p className="text-sm text-muted-foreground">Более 50 000 довольных клиентов</p>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Современное технологичное оборудование</p>
                 </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <Icon name="Users" size={20} className="text-primary" />
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Даем гарантию на все виды работ</p>
                 </div>
-                <div>
-                  <h3 className="font-heading font-semibold mb-1">Профессиональная команда</h3>
-                  <p className="text-sm text-muted-foreground">Сертифицированные мастера</p>
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Стаж работы сотрудников от 3х лет</p>
                 </div>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <Icon name="Settings" size={20} className="text-primary" />
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Соблюдение технологий при выполнении работ</p>
                 </div>
-                <div>
-                  <h3 className="font-heading font-semibold mb-1">Современное оборудование</h3>
-                  <p className="text-sm text-muted-foreground">Автоматизированные стенды</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-3">
+                  <span className="text-2xl font-bold text-primary">02</span>
                 </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <Icon name="ShieldCheck" size={20} className="text-primary" />
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Полная диагностика колеса на геометрию</p>
                 </div>
-                <div>
-                  <h3 className="font-heading font-semibold mb-1">Гарантия качества</h3>
-                  <p className="text-sm text-muted-foreground">На все виды работ</p>
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Проверка на герметичность и износ шин</p>
                 </div>
-              </div>
-            </div>
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Проверка давления в шинах</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Проверка балансировки колес</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-3">
+                  <span className="text-2xl font-bold text-primary">03</span>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Ремонт в присутствии клиента</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Контроль затяжки динамометрическим ключом</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Оплата телефоном/картой</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-3">
+                  <span className="text-2xl font-bold text-primary">04</span>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Автомойка</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">Просторная парковка</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Icon name="CheckCircle2" size={16} className="text-primary mt-1 flex-shrink-0" />
+                  <p className="text-sm">АЗС</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
       {showBooking && (
         <section id="booking" className="container mx-auto px-4 py-16 animate-fade-in">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <PublicBookingForm />
           </div>
         </section>
@@ -281,7 +336,7 @@ const Home = () => {
           </div>
           <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
             <p>ИП Кольцов Роман Петрович</p>
-            <p className="mt-1">&copy; 2024 RK Шиномонтаж. Все права защищены.</p>
+            <p className="mt-1">&copy; 2025 RK Шиномонтаж. Все права защищены.</p>
           </div>
         </div>
       </footer>

@@ -297,7 +297,7 @@ const Pricing = () => {
           </div>
           <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
             <p>ИП Кольцов Роман Петрович</p>
-            <p className="mt-1">&copy; 2024 RK Шиномонтаж. Все права защищены.</p>
+            <p className="mt-1">&copy; 2025 RK Шиномонтаж. Все права защищены.</p>
           </div>
         </div>
       </footer>
