@@ -6,15 +6,15 @@
 2. Переименуйте файл "server.txt" в "index.ts" 
    и переместите в папку server/
 
-3. Скопируйте package.json в папку server/
+3. ГОТОВО! 
 
-4. Откройте терминал в папке server и выполните:
-   npm install
+Запуск:
+-------
 
-5. Запустите сервер:
-   node index.ts
-   (или: bun run index.ts если установлен Bun)
+Windows - двойной клик на файл:
+   start-simple.bat
 
-6. Сервер запустится на http://localhost:3001
+Или вручную в терминале:
+   npx tsx server/index.ts
 
-ГОТОВО! Теперь можете запускать frontend приложение.
+Сервер запустится на http://localhost:3001

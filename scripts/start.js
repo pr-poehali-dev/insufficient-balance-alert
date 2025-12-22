@@ -17,8 +17,8 @@ const rootDir = join(__dirname, '..');
 const isWin = process.platform === 'win32';
 
 const backend = spawn(
-  isWin ? 'bun.exe' : 'bun',
-  ['run', join(rootDir, 'server/index.ts')],
+  isWin ? 'npx.cmd' : 'npx',
+  ['tsx', join(rootDir, 'server/index.ts')],
   { 
     cwd: rootDir,
     shell: isWin,
@@ -29,7 +29,7 @@ const backend = spawn(
 setTimeout(() => {
   const frontend = spawn(
     isWin ? 'npm.cmd' : 'npm',
-    ['run', 'dev:client'],
+    ['run', 'dev'],
     { 
       cwd: rootDir,
       shell: isWin,
