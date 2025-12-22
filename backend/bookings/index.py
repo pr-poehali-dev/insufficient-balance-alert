@@ -121,6 +121,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 update_fields.append('notes = %s')
                 params.append(body_data['notes'])
             
+            if 'assignedMasterId' in body_data:
+                update_fields.append('assigned_master_id = %s')
+                params.append(body_data['assignedMasterId'])
+                update_fields.append('assigned_at = CURRENT_TIMESTAMP')
+                if body_data['assignedMasterId']:
+                    update_fields.append('status = %s')
+                    params.append('in-progress')
+            
             if update_fields:
                 update_fields.append('updated_at = CURRENT_TIMESTAMP')
                 params.append(order_id)

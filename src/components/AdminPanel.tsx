@@ -17,6 +17,13 @@ type Order = {
   status: string;
   service_price: number;
   location: string;
+  assigned_master_id?: number;
+};
+
+type Master = {
+  id: number;
+  name: string;
+  location: string;
 };
 
 const getStatusColor = (status: string) => {
@@ -51,6 +58,7 @@ const getStatusLabel = (status: string) => {
 
 const AdminPanel = () => {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [masters, setMasters] = useState<Master[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -73,8 +81,21 @@ const AdminPanel = () => {
     }
   };
 
+  const fetchMasters = async () => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/6929340f-b7a0-4f38-a511-642cca1b12b5');
+      if (response.ok) {
+        const data = await response.json();
+        setMasters(data);
+      }
+    } catch (error) {
+      console.error('Error fetching masters:', error);
+    }
+  };
+
   useEffect(() => {
     fetchOrders();
+    fetchMasters();
     const interval = setInterval(fetchOrders, 10000);
     return () => clearInterval(interval);
   }, []);
@@ -104,6 +125,36 @@ const AdminPanel = () => {
       toast({
         title: 'Ошибка',
         description: 'Не удалось обновить статус',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const assignMaster = async (orderId: number, masterId: string) => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/3e1c1c17-302d-4b69-ba4e-9aa5ce666bcd', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: orderId,
+          assignedMasterId: masterId ? parseInt(masterId) : null,
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно',
+          description: 'Мастер назначен на заказ',
+        });
+        fetchOrders();
+      }
+    } catch (error) {
+      console.error('Error assigning master:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось назначить мастера',
         variant: 'destructive',
       });
     }
@@ -177,9 +228,9 @@ const AdminPanel = () => {
                   <TableHead>Точка</TableHead>
                   <TableHead>Услуга</TableHead>
                   <TableHead>Дата и время</TableHead>
+                  <TableHead>Мастер</TableHead>
                   <TableHead>Статус</TableHead>
                   <TableHead>Сумма</TableHead>
-                  <TableHead className="text-right">Действия</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -201,30 +252,29 @@ const AdminPanel = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Select value={order.status} onValueChange={(value) => updateOrderStatus(order.id, value)}>
-                        <SelectTrigger className="w-[140px]">
-                          <SelectValue>
-                            <Badge variant="outline" className={getStatusColor(order.status)}>
-                              {getStatusLabel(order.status)}
-                            </Badge>
-                          </SelectValue>
+                      <Select 
+                        value={order.assigned_master_id?.toString() || 'none'} 
+                        onValueChange={(value) => assignMaster(order.id, value)}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Назначить мастера" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="pending">Ожидает</SelectItem>
-                          <SelectItem value="in-progress">В работе</SelectItem>
-                          <SelectItem value="completed">Выполнен</SelectItem>
-                          <SelectItem value="cancelled">Отменен</SelectItem>
+                          <SelectItem value="none">Не назначен</SelectItem>
+                          {masters.map((master) => (
+                            <SelectItem key={master.id} value={master.id.toString()}>
+                              {master.name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </TableCell>
-                    <TableCell className="font-medium">{order.service_price.toLocaleString()} ₽</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex gap-2 justify-end">
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Icon name="Eye" size={16} />
-                        </Button>
-                      </div>
+                    <TableCell>
+                      <Badge variant="outline" className={getStatusColor(order.status)}>
+                        {getStatusLabel(order.status)}
+                      </Badge>
                     </TableCell>
+                    <TableCell className="font-medium">{order.service_price.toLocaleString()} ₽</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
