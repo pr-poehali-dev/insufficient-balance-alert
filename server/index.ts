@@ -203,6 +203,10 @@ app.get('/api/masters', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Локальный сервер запущен на http://localhost:${PORT}`);
-  console.log(`📊 База данных: ${join(__dirname, 'database.db')}`);
+  console.log('\n═══════════════════════════════════════════════════════════');
+  console.log('🚀 BACKEND СЕРВЕР ЗАПУЩЕН');
+  console.log('═══════════════════════════════════════════════════════════');
+  console.log(`📡 API: http://localhost:${PORT}/api`);
+  console.log(`💾 База данных: ${join(__dirname, 'database.db')}`);
+  console.log('═══════════════════════════════════════════════════════════\n');
 });
