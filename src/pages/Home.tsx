@@ -43,7 +43,7 @@ const Home = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="https://cdn.poehali.dev/projects/c1c09016-cc89-4baa-8b88-5eaabdae4c88/files/1e6c774e-7368-4275-8873-c4bc06122ae9.jpg" alt="RK Шиномонтаж" className="h-12" />
+              <img src="https://cdn.poehali.dev/files/image 12.png" alt="RK Шиномонтаж" className="h-12" />
             </div>
             <nav className="hidden md:flex items-center gap-6">
               <a href="#services" className="text-sm hover:text-primary transition-colors">Услуги</a>
