@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import { api } from '@/lib/api';
 
 type Master = {
   id: number;
@@ -71,13 +72,10 @@ const Master = () => {
 
   const fetchMasters = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/6929340f-b7a0-4f38-a511-642cca1b12b5');
-      if (response.ok) {
-        const data = await response.json();
-        setMasters(data);
-        if (data.length > 0) {
-          setSelectedMaster(data[0].id.toString());
-        }
+      const data = await api.masters.getAll();
+      setMasters(data);
+      if (data.length > 0) {
+        setSelectedMaster(data[0].id.toString());
       }
     } catch (error) {
       console.error('Error fetching masters:', error);
@@ -89,13 +87,8 @@ const Master = () => {
     
     setLoading(true);
     try {
-      const response = await fetch(
-        `https://functions.poehali.dev/6929340f-b7a0-4f38-a511-642cca1b12b5?masterId=${selectedMaster}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setOrders(data);
-      }
+      const data = await api.masters.getOrders(selectedMaster);
+      setOrders(data);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast({
@@ -110,24 +103,15 @@ const Master = () => {
 
   const completeOrder = async (orderId: number) => {
     try {
-      const response = await fetch('https://functions.poehali.dev/3e1c1c17-302d-4b69-ba4e-9aa5ce666bcd', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: orderId,
-          status: 'completed',
-        }),
+      await api.bookings.update({
+        id: orderId,
+        status: 'completed',
       });
-
-      if (response.ok) {
-        toast({
-          title: 'Успешно',
-          description: 'Заказ отмечен как выполненный',
-        });
-        fetchOrders();
-      }
+      toast({
+        title: 'Успешно',
+        description: 'Заказ отмечен как выполненный',
+      });
+      fetchOrders();
     } catch (error) {
       console.error('Error completing order:', error);
       toast({

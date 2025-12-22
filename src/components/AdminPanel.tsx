@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import { api } from '@/lib/api';
 
 type Order = {
   id: number;
@@ -64,11 +65,8 @@ const AdminPanel = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/3e1c1c17-302d-4b69-ba4e-9aa5ce666bcd');
-      if (response.ok) {
-        const data = await response.json();
-        setOrders(data);
-      }
+      const data = await api.bookings.getAll();
+      setOrders(data);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast({
@@ -83,11 +81,8 @@ const AdminPanel = () => {
 
   const fetchMasters = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/6929340f-b7a0-4f38-a511-642cca1b12b5');
-      if (response.ok) {
-        const data = await response.json();
-        setMasters(data);
-      }
+      const data = await api.masters.getAll();
+      setMasters(data);
     } catch (error) {
       console.error('Error fetching masters:', error);
     }
@@ -102,24 +97,15 @@ const AdminPanel = () => {
 
   const updateOrderStatus = async (orderId: number, newStatus: string) => {
     try {
-      const response = await fetch('https://functions.poehali.dev/3e1c1c17-302d-4b69-ba4e-9aa5ce666bcd', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: orderId,
-          status: newStatus,
-        }),
+      await api.bookings.update({
+        id: orderId,
+        status: newStatus,
       });
-
-      if (response.ok) {
-        toast({
-          title: 'Успешно',
-          description: 'Статус заказа обновлен',
-        });
-        fetchOrders();
-      }
+      toast({
+        title: 'Успешно',
+        description: 'Статус заказа обновлен',
+      });
+      fetchOrders();
     } catch (error) {
       console.error('Error updating order:', error);
       toast({
@@ -132,24 +118,15 @@ const AdminPanel = () => {
 
   const assignMaster = async (orderId: number, masterId: string) => {
     try {
-      const response = await fetch('https://functions.poehali.dev/3e1c1c17-302d-4b69-ba4e-9aa5ce666bcd', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: orderId,
-          assignedMasterId: masterId ? parseInt(masterId) : null,
-        }),
+      await api.bookings.update({
+        id: orderId,
+        assignedMasterId: masterId ? parseInt(masterId) : null,
       });
-
-      if (response.ok) {
-        toast({
-          title: 'Успешно',
-          description: 'Мастер назначен на заказ',
-        });
-        fetchOrders();
-      }
+      toast({
+        title: 'Успешно',
+        description: 'Мастер назначен на заказ',
+      });
+      fetchOrders();
     } catch (error) {
       console.error('Error assigning master:', error);
       toast({

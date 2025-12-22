@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server/index.ts",
+    "client": "vite"
+  }
+}

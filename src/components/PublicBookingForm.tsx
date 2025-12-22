@@ -7,6 +7,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
+import { api } from '@/lib/api';
 
 type ServiceType = {
   id: string;
@@ -48,30 +49,19 @@ const PublicBookingForm = () => {
 
   const handleBooking = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/3e1c1c17-302d-4b69-ba4e-9aa5ce666bcd', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          clientName,
-          clientPhone,
-          clientEmail,
-          location: selectedLocationData?.name,
-          carType,
-          service: selectedServiceData?.name,
-          serviceDuration: totalDuration,
-          servicePrice: totalPrice,
-          bookingDate: selectedDate?.toISOString().split('T')[0],
-          bookingTime: selectedTime,
-        }),
+      await api.bookings.create({
+        clientName,
+        clientPhone,
+        clientEmail,
+        location: selectedLocationData?.name || '',
+        carType,
+        service: selectedServiceData?.name || '',
+        serviceDuration: totalDuration,
+        servicePrice: totalPrice,
+        bookingDate: selectedDate?.toISOString().split('T')[0] || '',
+        bookingTime: selectedTime,
       });
-
-      if (response.ok) {
-        setStep(4);
-      } else {
-        console.error('Failed to create booking');
-      }
+      setStep(4);
     } catch (error) {
       console.error('Error creating booking:', error);
     }
