@@ -1,0 +1,13 @@
+{
+  "name": "shinopro-server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "cors": "^2.8.5",
+    "better-sqlite3": "^12.5.0"
+  }
+}
