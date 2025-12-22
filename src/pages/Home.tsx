@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import PublicBookingForm from '@/components/PublicBookingForm';
 
 const services = [
   { name: 'Замена колес', price: 'от 2000 ₽', icon: 'Settings', description: 'Быстрая переобувка с гарантией' },
@@ -220,32 +221,7 @@ const Home = () => {
       {showBooking && (
         <section id="booking" className="container mx-auto px-4 py-16 animate-fade-in">
           <div className="max-w-4xl mx-auto">
-            <Card className="border-primary bg-card">
-              <CardHeader className="text-center">
-                <CardTitle className="text-3xl font-heading">Онлайн-запись</CardTitle>
-                <CardDescription>Заполните форму и мы свяжемся с вами для подтверждения</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
-                    <Icon name="Calendar" size={48} className="text-primary" />
-                  </div>
-                  <p className="text-muted-foreground mb-6">
-                    Для записи используйте панель администратора или позвоните по телефону
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button size="lg" className="bg-primary hover:bg-primary/90">
-                      <Icon name="Phone" size={20} className="mr-2" />
-                      +7 (999) 123-45-67
-                    </Button>
-                    <Button size="lg" variant="outline" onClick={() => window.location.href = '/'}>
-                      <Icon name="LayoutDashboard" size={20} className="mr-2" />
-                      Панель управления
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <PublicBookingForm />
           </div>
         </section>
       )}
