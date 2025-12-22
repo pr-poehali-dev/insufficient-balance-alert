@@ -10,7 +10,7 @@ const Pricing = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="https://cdn.poehali.dev/files/image 12.png" alt="RK Шиномонтаж" className="h-12" />
+              <img src="https://cdn.poehali.dev/files/image%2012.png" alt="RK Шиномонтаж" className="h-12" />
             </div>
             <nav className="hidden md:flex items-center gap-6">
               <a href="/" className="text-sm hover:text-primary transition-colors">Главная</a>
@@ -250,7 +250,7 @@ const Pricing = () => {
           <div className="grid gap-8 md:grid-cols-4">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <img src="https://cdn.poehali.dev/files/image 12.png" alt="RK Шиномонтаж" className="h-10" />
+                <img src="https://cdn.poehali.dev/files/image%2012.png" alt="RK Шиномонтаж" className="h-10" />
               </div>
               <p className="text-sm text-muted-foreground">
                 Профессиональный шиномонтаж в Красноярске

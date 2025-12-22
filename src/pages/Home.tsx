@@ -6,12 +6,12 @@ import Icon from '@/components/ui/icon';
 import PublicBookingForm from '@/components/PublicBookingForm';
 
 const services = [
-  { name: 'Замена колес', price: 'от 2000 ₽', icon: 'Settings', description: 'Быстрая переобувка с гарантией' },
-  { name: 'Балансировка', price: 'от 1200 ₽', icon: 'Gauge', description: 'Точная балансировка колес' },
-  { name: 'Ремонт прокола', price: 'от 800 ₽', icon: 'Wrench', description: 'Качественный ремонт за 15 минут' },
-  { name: 'Развал-схождение', price: 'от 3500 ₽', icon: 'CircleDot', description: 'Компьютерная диагностика' },
-  { name: 'Хранение шин', price: 'от 3000 ₽/сезон', icon: 'Package', description: 'Склад с контролем влажности' },
-  { name: 'Шиномонтаж грузовой', price: 'от 5000 ₽', icon: 'Truck', description: 'Обслуживание коммерческого транспорта' },
+  { name: 'Комплекс «Перекидка»', price: 'от 1640 ₽', icon: 'Package', description: 'Снятие/установка, балансировка, шиномонтаж (4 колеса)' },
+  { name: 'Комплекс «Перекидка в Сборе»', price: 'от 1100 ₽', icon: 'Settings', description: 'Снятие/установка, балансировка (4 колеса)' },
+  { name: 'Комплекс «Ремонт»', price: 'от 960 ₽', icon: 'Wrench', description: 'Снятие/установка, балансировка, шиномонтаж' },
+  { name: 'Сезонное хранение шин', price: 'от 2500 ₽', icon: 'Archive', description: 'Хранение 4 колес на сезон' },
+  { name: 'Ремонт прокола', price: 'от 220 ₽', icon: 'Tool', description: 'Ремонт жгутом, латкой или кордовой заплаткой' },
+  { name: 'Дополнительные услуги', price: 'от 60 ₽', icon: 'Plus', description: 'Мойка колеса, утилизация, дошиповка' },
 ];
 
 const locations = [
@@ -42,7 +42,7 @@ const Home = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="https://cdn.poehali.dev/files/image 12.png" alt="RK Шиномонтаж" className="h-12" />
+              <img src="https://cdn.poehali.dev/files/image%2012.png" alt="RK Шиномонтаж" className="h-12" />
             </div>
             <nav className="hidden md:flex items-center gap-6">
               <a href="#services" className="text-sm hover:text-primary transition-colors">Услуги</a>
@@ -137,7 +137,7 @@ const Home = () => {
             Выберите удобное расположение и запишитесь на обслуживание
           </p>
         </div>
-        <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+        <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto justify-center">
           {locations.map((location, index) => (
             <Card key={index} className="border-border bg-card hover-scale animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
               <CardHeader>
@@ -289,7 +289,7 @@ const Home = () => {
           <div className="grid gap-8 md:grid-cols-4">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <img src="https://cdn.poehali.dev/files/image 12.png" alt="RK Шиномонтаж" className="h-10" />
+                <img src="https://cdn.poehali.dev/files/image%2012.png" alt="RK Шиномонтаж" className="h-10" />
               </div>
               <p className="text-sm text-muted-foreground">
                 Профессиональный шиномонтаж в Красноярске
