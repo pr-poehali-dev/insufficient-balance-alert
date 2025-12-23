@@ -1,39 +1,158 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
+import { useToast } from '@/hooks/use-toast';
+import { api } from '@/lib/api';
 
-const mockOrders = [
-  { id: '001', client: 'Иван Петров', service: 'Замена колес', time: '10:00', status: 'Запланирован', price: 2000 },
-  { id: '002', client: 'Мария Сидорова', service: 'Балансировка', time: '11:00', status: 'В работе', price: 1200 },
-  { id: '003', client: 'Алексей Козлов', service: 'Ремонт прокола', time: '14:00', status: 'Выполнен', price: 800 },
-  { id: '004', client: 'Ольга Смирнова', service: 'Развал-схождение', time: '15:00', status: 'Запланирован', price: 3500 },
-];
+type Order = {
+  id: number;
+  client_name: string;
+  client_phone: string;
+  service: string;
+  booking_time: string;
+  booking_date: string;
+  status: string;
+  service_price: number;
+  location: string;
+  assigned_master_id?: number;
+};
 
-const stats = [
-  { label: 'Выручка за сегодня', value: '7 500 ₽', icon: 'TrendingUp', color: 'text-primary' },
-  { label: 'Заказов сегодня', value: '4', icon: 'ShoppingCart', color: 'text-secondary' },
-  { label: 'Средний чек', value: '1 875 ₽', icon: 'Wallet', color: 'text-primary' },
-  { label: 'На складе комплектов', value: '23', icon: 'Package', color: 'text-secondary' },
-];
+type Master = {
+  id: number;
+  name: string;
+  location: string;
+};
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'Запланирован':
+    case 'pending':
       return 'bg-blue-500/20 text-blue-400 border-blue-500/50';
-    case 'В работе':
+    case 'in-progress':
       return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50';
-    case 'Выполнен':
+    case 'completed':
       return 'bg-green-500/20 text-green-400 border-green-500/50';
-    case 'Отменен':
+    case 'cancelled':
       return 'bg-red-500/20 text-red-400 border-red-500/50';
     default:
       return '';
   }
 };
 
+const getStatusLabel = (status: string) => {
+  switch (status) {
+    case 'pending':
+      return 'Ожидает';
+    case 'in-progress':
+      return 'В работе';
+    case 'completed':
+      return 'Выполнен';
+    case 'cancelled':
+      return 'Отменен';
+    default:
+      return status;
+  }
+};
+
 const AdminPanel = () => {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [masters, setMasters] = useState<Master[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  const fetchOrders = async () => {
+    try {
+      const data = await api.bookings.getAll();
+      setOrders(data);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось загрузить заказы',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchMasters = async () => {
+    try {
+      const data = await api.masters.getAll();
+      setMasters(data);
+    } catch (error) {
+      console.error('Error fetching masters:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+    fetchMasters();
+    const interval = setInterval(fetchOrders, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const updateOrderStatus = async (orderId: number, newStatus: string) => {
+    try {
+      await api.bookings.update({
+        id: orderId,
+        status: newStatus,
+      });
+      toast({
+        title: 'Успешно',
+        description: 'Статус заказа обновлен',
+      });
+      fetchOrders();
+    } catch (error) {
+      console.error('Error updating order:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить статус',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const assignMaster = async (orderId: number, masterId: string) => {
+    try {
+      await api.bookings.update({
+        id: orderId,
+        assignedMasterId: masterId ? parseInt(masterId) : null,
+      });
+      toast({
+        title: 'Успешно',
+        description: 'Мастер назначен на заказ',
+      });
+      fetchOrders();
+    } catch (error) {
+      console.error('Error assigning master:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось назначить мастера',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const todayOrders = orders.filter(order => {
+    const orderDate = new Date(order.booking_date);
+    const today = new Date();
+    return orderDate.toDateString() === today.toDateString();
+  });
+
+  const totalRevenue = todayOrders.reduce((sum, order) => sum + order.service_price, 0);
+  const averageCheck = todayOrders.length > 0 ? Math.round(totalRevenue / todayOrders.length) : 0;
+
+  const stats = [
+    { label: 'Выручка за сегодня', value: `${totalRevenue.toLocaleString()} ₽`, icon: 'TrendingUp', color: 'text-primary' },
+    { label: 'Заказов сегодня', value: todayOrders.length.toString(), icon: 'ShoppingCart', color: 'text-secondary' },
+    { label: 'Средний чек', value: `${averageCheck.toLocaleString()} ₽`, icon: 'Wallet', color: 'text-primary' },
+    { label: 'Всего заказов', value: orders.length.toString(), icon: 'Package', color: 'text-secondary' },
+  ];
+
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -61,126 +180,85 @@ const AdminPanel = () => {
               <CardTitle className="text-2xl font-heading">Заказы</CardTitle>
               <CardDescription>Управление текущими и прошлыми заказами</CardDescription>
             </div>
-            <Button className="bg-primary hover:bg-primary/90">
-              <Icon name="Plus" size={18} className="mr-2" />
-              Новый заказ
+            <Button className="bg-primary hover:bg-primary/90" onClick={fetchOrders}>
+              <Icon name="RefreshCw" size={18} className="mr-2" />
+              Обновить
             </Button>
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Клиент</TableHead>
-                <TableHead>Услуга</TableHead>
-                <TableHead>Время</TableHead>
-                <TableHead>Статус</TableHead>
-                <TableHead>Сумма</TableHead>
-                <TableHead className="text-right">Действия</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {mockOrders.map((order) => (
-                <TableRow key={order.id} className="hover:bg-muted/50 transition-colors">
-                  <TableCell className="font-medium">#{order.id}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                        <Icon name="User" size={16} className="text-primary" />
-                      </div>
-                      {order.client}
-                    </div>
-                  </TableCell>
-                  <TableCell>{order.service}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      <Icon name="Clock" size={14} className="text-muted-foreground" />
-                      {order.time}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={getStatusColor(order.status)}>
-                      {order.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="font-medium">{order.price} ₽</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex gap-2 justify-end">
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <Icon name="Eye" size={16} />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <Icon name="Edit" size={16} />
-                      </Button>
-                    </div>
-                  </TableCell>
+          {loading ? (
+            <div className="text-center py-8">
+              <Icon name="Loader2" size={32} className="animate-spin mx-auto text-primary" />
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <Icon name="Inbox" size={48} className="mx-auto mb-3 opacity-50" />
+              <p>Заказов пока нет</p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Клиент</TableHead>
+                  <TableHead>Точка</TableHead>
+                  <TableHead>Услуга</TableHead>
+                  <TableHead>Дата и время</TableHead>
+                  <TableHead>Мастер</TableHead>
+                  <TableHead>Статус</TableHead>
+                  <TableHead>Сумма</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {orders.map((order) => (
+                  <TableRow key={order.id} className="hover:bg-muted/50 transition-colors">
+                    <TableCell className="font-medium">#{order.id}</TableCell>
+                    <TableCell>
+                      <div>
+                        <p className="font-medium">{order.client_name}</p>
+                        <p className="text-sm text-muted-foreground">{order.client_phone}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm">{order.location}</TableCell>
+                    <TableCell>{order.service}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <Icon name="Calendar" size={14} className="text-muted-foreground" />
+                        {new Date(order.booking_date).toLocaleDateString('ru-RU')} {order.booking_time}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Select 
+                        value={order.assigned_master_id?.toString() || 'none'} 
+                        onValueChange={(value) => assignMaster(order.id, value)}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Назначить мастера" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">Не назначен</SelectItem>
+                          {masters.map((master) => (
+                            <SelectItem key={master.id} value={master.id.toString()}>
+                              {master.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={getStatusColor(order.status)}>
+                        {getStatusLabel(order.status)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="font-medium">{order.service_price.toLocaleString()} ₽</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card className="border-border bg-card">
-          <CardHeader>
-            <CardTitle className="text-xl font-heading">Клиенты</CardTitle>
-            <CardDescription>База постоянных клиентов</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {['Иван Петров', 'Мария Сидорова', 'Алексей Козлов'].map((client, index) => (
-                <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                      <Icon name="User" size={18} className="text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{client}</p>
-                      <p className="text-sm text-muted-foreground">Визитов: {3 - index}</p>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="icon">
-                    <Icon name="ChevronRight" size={18} />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border bg-card">
-          <CardHeader>
-            <CardTitle className="text-xl font-heading">Склад шин</CardTitle>
-            <CardDescription>Комплекты на хранении</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { client: 'Иван Петров', location: 'A-12', season: 'Зима' },
-                { client: 'Мария Сидорова', location: 'B-05', season: 'Лето' },
-                { client: 'Алексей Козлов', location: 'C-18', season: 'Зима' },
-              ].map((item, index) => (
-                <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center">
-                      <Icon name="Package" size={18} className="text-secondary" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{item.client}</p>
-                      <p className="text-sm text-muted-foreground">Ячейка: {item.location} • {item.season}</p>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="icon">
-                    <Icon name="ChevronRight" size={18} />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 };
